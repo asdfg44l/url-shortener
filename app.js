@@ -2,6 +2,10 @@ const express = require('express')
 const app = express()
 const exphbs = require('express-handlebars')
 const { urlencoded } = require('body-parser')
+const validUrl = require('valid-url');
+
+const ShortenerUrl = require('./models/shortenerUrl')
+const { getShortenerUrl } = require('./utils/shortenerUrlGenerator')
 
 //mongodb
 require('./config/mongoose')
@@ -17,15 +21,49 @@ app.set('view engine', 'hbs')
 app.use(urlencoded({ extended: true }))
 
 //route
+
+
 app.get('/', (req, res) => {
     return res.render('index')
+    // res.redirect('www.google.com')
 })
 
-app.post('/shortener-url', (req, res) => {
-    console.log(req.body)
-    return res.redirect('/')
+app.post('/shortener-url', async (req, res) => {
+    const { url } = req.body
+    //check if url isValid
+    if (!validUrl.isWebUri(url)) {
+        return res.render('index', { url, error: '錯誤的網址格式' })
+    }
+    let randomUrl = ''
+    let isSame = true
+    while (isSame) {
+        randomUrl = getShortenerUrl(5)
+        let sameRedirect = await ShortenerUrl.findOne({ redirect: randomUrl })
+        if (sameRedirect) {
+            isSame = true
+            continue
+        }
+        let sameContent = await ShortenerUrl.findOneAndUpdate({ content: url }, { redirect: randomUrl })
+        if (!sameContent) {
+            await ShortenerUrl.create({ content: url, redirect: randomUrl })
+        }
+
+        isSame = false
+    }
+
+    return res.render('index', { url, shortenerUrl: randomUrl })
 })
 
+app.get('/:id', (req, res, next) => {
+    const url_id = req.params.id
+
+})
+
+//404 handler: https://expressjs.com/zh-tw/starter/faq.html
+app.use((req, res, next) => {
+    res.status(404).send('Not found');
+    next()
+})
 
 //listening
 app.listen(PORT, () => {

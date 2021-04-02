@@ -1,9 +1,21 @@
 <div class="row justify-content-center">
     <div class="col-md-10">
         <form action="/shortener-url" method="post" class="needs-validation" novalidate>
+            {{#if error}}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{error}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {{/if}}
             <div class="from-group">
                 <label for="url">URL</label>
-                <input type="text" class="form-control" id="url" placeholder="Enter URL" required>
+                <input type="text" class="form-control" name="url" id="url" placeholder="Enter URL" value="{{ url }}"
+                    required>
+                <small class="form-text text-muted">
+                    ex: 'http://werer.gr', 'https://www.google.com'
+                </small>
                 <div class="invalid-feedback">
                     請輸入網址
                 </div>
@@ -17,7 +29,7 @@
         <div class="custom-group mt-5">
             <h4>短網址: </h4>
             <div class="border rounded py-2 px-3" style="min-height: 200px;">
-                <a href="">dsada</a>
+                <a href="{{shortenerUrl}}">{{shortenerUrl}}</a>
             </div>
         </div>
 

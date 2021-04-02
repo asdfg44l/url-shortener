@@ -4,13 +4,11 @@ function randomPicker(array) {
   return array[randomIndex]
 }
 
-function getUrl(length) {
+function getShortenerUrl(length) {
 
   const number = '1234567890'
   const lowercaseLetter = 'abcdefghijklmnopqrstuvwxyz'
   const uppercaseLetter = lowercaseLetter.toUpperCase()
-
-  //check if url isValid
 
   //mix number and letter
   const numberArray = number.split('')
@@ -27,10 +25,12 @@ function getUrl(length) {
   }
 
   //concate url
-  const baseUrl = 'http://localhost:3000/'
-  const randomUrl = baseUrl + randomLetter
-  return randomUrl
+  // const baseUrl = 'http://localhost:3000/'
+  // const randomUrl = baseUrl + randomLetter
+
+  //check if repeat
+
+  return randomLetter
 }
 
-
-console.log(getUrl(5))
+module.exports = { getShortenerUrl }

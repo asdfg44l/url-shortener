@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 //connect
 const MONGODB_URI = "mongodb://localhost/shortener-url"
-mongoose.connect(MONGODB_URI, { useCreateIndex: true, useUnifiedTopology: true, useNewUrlParser: true })
+mongoose.connect(MONGODB_URI, { useCreateIndex: true, useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: true })
 
 const db = mongoose.connection
 
