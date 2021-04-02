@@ -11,6 +11,7 @@ const { getShortenerUrl } = require('./utils/shortenerUrlGenerator')
 require('./config/mongoose')
 
 //PORT
+const baseUrl = 'http://localhost:3000/'
 const PORT = 3000
 
 //view engine
@@ -34,29 +35,33 @@ app.post('/shortener-url', async (req, res) => {
     if (!validUrl.isWebUri(url)) {
         return res.render('index', { url, error: '錯誤的網址格式' })
     }
-    let randomUrl = ''
+    let randomCode = ''
     let isSame = true
     while (isSame) {
-        randomUrl = getShortenerUrl(5)
-        let sameRedirect = await ShortenerUrl.findOne({ redirect: randomUrl })
+        //prevent repeat shortener url
+        randomCode = getShortenerUrl(5)
+        let sameRedirect = await ShortenerUrl.findOne({ redirect: randomCode })
         if (sameRedirect) {
             isSame = true
             continue
         }
-        let sameContent = await ShortenerUrl.findOneAndUpdate({ content: url }, { redirect: randomUrl })
+        //update while origin url already exist
+        let sameContent = await ShortenerUrl.findOneAndUpdate({ content: url }, { redirect: randomCode })
+        //else create a new one
         if (!sameContent) {
-            await ShortenerUrl.create({ content: url, redirect: randomUrl })
+            await ShortenerUrl.create({ content: url, redirect: randomCode })
         }
 
         isSame = false
     }
 
-    return res.render('index', { url, shortenerUrl: randomUrl })
+    return res.render('index', { url, shortenerUrl: randomCode, urlContent: baseUrl + randomCode })
 })
 
-app.get('/:id', (req, res, next) => {
-    const url_id = req.params.id
-
+app.get('/:id', async (req, res) => {
+    const randomCode = req.params.id
+    let shortenerUrl = await ShortenerUrl.findOne({ redirect: randomCode }).lean()
+    return res.redirect(shortenerUrl.content)
 })
 
 //404 handler: https://expressjs.com/zh-tw/starter/faq.html
