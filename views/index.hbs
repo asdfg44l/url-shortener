@@ -29,7 +29,9 @@
         <div class="custom-group mt-5">
             <h4>短網址: </h4>
             <div class="border rounded py-2 px-3" style="min-height: 200px;">
-                <a href="{{shortenerUrl}}">{{urlContent}}</a>
+                {{!-- prevent tabnabbing: https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/
+                --}}
+                <a href="{{shortenerUrl}}" target="_blank" rel="noopener noreferrer">{{urlContent}}</a>
             </div>
         </div>
 
