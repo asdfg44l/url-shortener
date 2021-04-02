@@ -12,4 +12,4 @@ const shortenerUrl = new Schema({
     }
 })
 
-module.exports = shortenerUrl
+module.exports = mongoose.model('ShortenerUrl', shortenerUrl)
