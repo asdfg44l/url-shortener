@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+require('./config/dotenv').loadEnv()
 const exphbs = require('express-handlebars')
 const { urlencoded } = require('body-parser')
 const validUrl = require('valid-url');
@@ -11,8 +12,8 @@ const { getShortenerUrl } = require('./utils/shortenerUrlGenerator')
 require('./config/mongoose')
 
 //PORT
-const baseUrl = 'http://localhost:3000/'
-const PORT = 3000
+const baseUrl = process.env.BASE_URL || 'http://localhost:3000/'
+const PORT = process.env.PORT || 3000
 
 //view engine
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
